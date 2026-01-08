@@ -1,5 +1,6 @@
-package com.px.jfmbackend.Entity;
+package com.px.jfmbackend.entity;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -25,12 +26,9 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id", callSuper = false)
+@EqualsAndHashCode(of = "contentHash", callSuper = false)
 @Entity
-@Table(
-        name = "movies",
-        uniqueConstraints = @UniqueConstraint(columnNames = "path")
-)
+@Table(name = "movies")
 @EntityListeners(AuditingEntityListener.class)
 public class MovieEntity extends AuditedEntity{
 
@@ -40,8 +38,11 @@ public class MovieEntity extends AuditedEntity{
 
     private String name;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String path;
+
+    @Column(nullable = false, unique = true, length = 64)
+    private String contentHash; // sha-256 64 hex chars
 
     private String description;
 
@@ -60,8 +61,6 @@ public class MovieEntity extends AuditedEntity{
             inverseJoinColumns = @JoinColumn(name = "actor_id")
     )
     private Set<ActorEntity> actors = new HashSet<>();
-
-
 
     // Recommendation System
     private int freshVal;

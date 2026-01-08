@@ -1,7 +1,8 @@
-package com.px.jfmbackend.Entity;
+package com.px.jfmbackend.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -12,6 +13,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Setter
@@ -19,15 +21,17 @@ import lombok.Setter;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "tag", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
-public class TagEntity {
+@Table(
+        name = "actor",
+        uniqueConstraints = @UniqueConstraint(columnNames = "name")
+)
+@EntityListeners(AuditingEntityListener.class)
+public class ActorEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
-
 }
-

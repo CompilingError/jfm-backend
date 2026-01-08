@@ -1,4 +1,4 @@
-package com.px.jfmbackend.Entity;
+package com.px.jfmbackend.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

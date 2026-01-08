@@ -1,8 +1,7 @@
-package com.px.jfmbackend.Entity;
+package com.px.jfmbackend.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,10 +12,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.Instant;
 
 @Getter
 @Setter
@@ -24,17 +19,15 @@ import java.time.Instant;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(
-        name = "actor",
-        uniqueConstraints = @UniqueConstraint(columnNames = "name")
-)
-@EntityListeners(AuditingEntityListener.class)
-public class ActorEntity {
+@Table(name = "tag", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
+public class TagEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
+
 }
+

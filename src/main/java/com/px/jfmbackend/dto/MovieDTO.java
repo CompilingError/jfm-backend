@@ -1,4 +1,4 @@
-package com.px.jfmbackend.DTO;
+package com.px.jfmbackend.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
