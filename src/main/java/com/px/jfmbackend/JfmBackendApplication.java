@@ -3,9 +3,9 @@ package com.px.jfmbackend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.mongodb.config.EnableMongoAuditing;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@EnableMongoAuditing
+@EnableJpaAuditing
 @SpringBootApplication
 public class JfmBackendApplication {
 
