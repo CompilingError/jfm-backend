@@ -1,4 +1,13 @@
 spring:
   application:
-    name:
-      jfm-backend
+    name: jfm-backend
+
+  datasource:
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite:${user.home}/.jfmbackend/jfm.db
+
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
