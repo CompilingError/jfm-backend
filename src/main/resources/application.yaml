@@ -4,7 +4,7 @@ spring:
 
   datasource:
     driver-class-name: org.sqlite.JDBC
-    url: jdbc:sqlite:${user.home}/.jfmbackend/jfm.db
+    url: jdbc:sqlite:./data/jfm.db
 
   jpa:
     database-platform: org.hibernate.community.dialect.SQLiteDialect
