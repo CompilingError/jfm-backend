@@ -1,17 +1,10 @@
 spring:
-  application:
-    name: jfm-backend
-
-  docker:
-    compose:
-      enabled: false
-
   datasource:
     driver-class-name: org.sqlite.JDBC
-    url: jdbc:sqlite:./data/jfm.db
+    url: jdbc:sqlite:./data/jfm-test.db
 
   jpa:
     database-platform: org.hibernate.community.dialect.SQLiteDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: false

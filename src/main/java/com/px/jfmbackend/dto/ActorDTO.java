@@ -6,8 +6,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ActorDTO {
-    private String id;
-    private String name;
+  private String id;
+  private String name;
 
-    // @TODO Add createObjectDTO for adding and updating
+  // @TODO Add createObjectDTO for adding and updating
 }

@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 public class JfmBackendApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(JfmBackendApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(JfmBackendApplication.class, args);
+  }
 }

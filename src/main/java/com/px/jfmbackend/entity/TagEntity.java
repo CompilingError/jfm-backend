@@ -22,12 +22,14 @@ import lombok.Setter;
 @Table(name = "tag", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
 public class TagEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  public TagEntity(String name) {
+    this.name = name;
+  }
 
-    @Column(nullable = false)
-    private String name;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
+  @Column(nullable = false)
+  private String name;
 }
-
