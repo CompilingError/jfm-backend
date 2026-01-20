@@ -3,6 +3,8 @@ package com.px.jfmbackend.repository;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.px.jfmbackend.entity.TagEntity;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,9 +21,7 @@ public class TagRepoTests {
 
   @BeforeEach
   public void setup() {
-    //        tagRepo.deleteAll();
     TagEntity tag = new TagEntity();
-    //        tag.setId(1L);
     tag.setName("test1");
     savedId = tagRepo.save(tag).getId();
     assertNotNull(savedId);
@@ -69,5 +69,32 @@ public class TagRepoTests {
         () -> {
           tagRepo.saveAndFlush(dup);
         });
+  }
+
+  @Test
+  void testDeleteAllById_found() {
+    // Make sure there exists such tag in db
+    Optional<TagEntity> found = tagRepo.findById(savedId);
+    assertTrue(found.isPresent());
+
+    // Make a list of id to be deleted
+    List<Long> ids = new ArrayList<>();
+    ids.add(savedId);
+    tagRepo.deleteAllById(ids);
+
+    assertFalse(tagRepo.findById(savedId).isPresent());
+  }
+
+  @Test
+  void testDeleteAllById_notFound() {
+    Long idNotExist = 999999L;
+    Optional<TagEntity> found = tagRepo.findById(idNotExist);
+    assertFalse(found.isPresent());
+
+    List<Long> ids = new ArrayList<>();
+    ids.add(idNotExist);
+    tagRepo.deleteAllById(ids);
+
+    assertFalse(tagRepo.findById(idNotExist).isPresent());
   }
 }

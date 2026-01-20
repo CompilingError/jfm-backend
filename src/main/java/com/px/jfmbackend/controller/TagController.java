@@ -7,10 +7,9 @@ import com.px.jfmbackend.service.TagService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping("/tags")
 public class TagController {
 
@@ -59,5 +58,11 @@ public class TagController {
         .update(id, updateTagDTO)
         .map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.notFound().build());
+  }
+
+  @DeleteMapping
+  public ResponseEntity<Void> deleteTag(@RequestParam List<Long> ids) {
+    tagService.delete(ids);
+    return ResponseEntity.noContent().build();
   }
 }
