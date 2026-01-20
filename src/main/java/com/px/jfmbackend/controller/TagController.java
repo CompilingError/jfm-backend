@@ -21,7 +21,9 @@ public class TagController {
     this.tagService = tagService;
   }
 
-  // Get all tags
+  /**
+   * Retrieves all tags.
+   */
   @GetMapping
   public List<TagDTO> getTags() {
     return tagService.findAll();
