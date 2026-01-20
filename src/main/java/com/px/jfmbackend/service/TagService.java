@@ -4,16 +4,21 @@ import com.px.jfmbackend.dto.CreateTagDTO;
 import com.px.jfmbackend.dto.TagDTO;
 import com.px.jfmbackend.dto.UpdateTagDTO;
 import com.px.jfmbackend.entity.TagEntity;
+import com.px.jfmbackend.exception.IdNotFoundException;
+import com.px.jfmbackend.exception.TagAlreadyExistException;
 import com.px.jfmbackend.repository.TagRepo;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TagService {
 
   private final TagRepo tagRepo;
+  private final Logger logger = Logger.getLogger(TagService.class.getName());
 
   @Autowired
   public TagService(TagRepo tagRepo) {
@@ -36,7 +41,7 @@ public class TagService {
     String name = createTagDTO.name().trim();
 
     if (tagRepo.existsByName(name)) {
-      throw new IllegalArgumentException("Tag already exists with name: \"" + name + "\"");
+      throw new TagAlreadyExistException("Tag already exists with name: \"" + name + "\"");
     }
 
     TagEntity tagEntity = tagRepo.save(new TagEntity(name));
@@ -48,7 +53,7 @@ public class TagService {
     String newName = updateTagDTO.name();
 
     if (tagRepo.existsByName(newName)) {
-      throw new IllegalArgumentException("Tag already exists with name: \"" + newName + "\"");
+      throw new TagAlreadyExistException("Tag already exists with name: \"" + newName + "\"");
     }
 
     return tagRepo
@@ -59,5 +64,15 @@ public class TagService {
               TagEntity updatedTag = tagRepo.save(tagToUpdate);
               return new TagDTO(updatedTag.getId(), updatedTag.getName());
             });
+  }
+
+  @Transactional
+  public void delete(List<Long> ids) throws IdNotFoundException {
+    for (Long id : ids) {
+      if (!tagRepo.existsById(id)) {
+        throw new IdNotFoundException("Tag with id: " + id + " does not exist.");
+      }
+    }
+    tagRepo.deleteAllById(ids);
   }
 }

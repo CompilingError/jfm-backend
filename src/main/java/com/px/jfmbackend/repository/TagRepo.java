@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface TagRepo extends JpaRepository<TagEntity, Long> {
   Optional<TagEntity> findByName(String name);
 
-  Optional<TagEntity> findById(Long id);
-
   boolean existsByName(String name);
+
+  boolean existsById(Long id);
 }
