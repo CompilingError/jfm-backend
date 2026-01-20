@@ -21,17 +21,14 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(
-        name = "actor",
-        uniqueConstraints = @UniqueConstraint(columnNames = "name")
-)
+@Table(name = "actor", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
 @EntityListeners(AuditingEntityListener.class)
 public class ActorEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String name;
+  @Column(nullable = false, unique = true)
+  private String name;
 }

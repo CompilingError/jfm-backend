@@ -2,6 +2,10 @@ spring:
   application:
     name: jfm-backend
 
+  docker:
+    compose:
+      enabled: false
+
   datasource:
     driver-class-name: org.sqlite.JDBC
     url: jdbc:sqlite:./data/jfm.db

@@ -1,0 +1,63 @@
+package com.px.jfmbackend.service;
+
+import com.px.jfmbackend.dto.CreateTagDTO;
+import com.px.jfmbackend.dto.TagDTO;
+import com.px.jfmbackend.dto.UpdateTagDTO;
+import com.px.jfmbackend.entity.TagEntity;
+import com.px.jfmbackend.repository.TagRepo;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class TagService {
+
+  private final TagRepo tagRepo;
+
+  @Autowired
+  public TagService(TagRepo tagRepo) {
+    this.tagRepo = tagRepo;
+  }
+
+  public List<TagDTO> findAll() {
+    return tagRepo.findAll().stream().map(tag -> new TagDTO(tag.getId(), tag.getName())).toList();
+  }
+
+  public Optional<TagDTO> findByName(String name) {
+    return tagRepo.findByName(name).map(tag -> new TagDTO(tag.getId(), tag.getName()));
+  }
+
+  public Optional<TagDTO> findById(Long id) {
+    return tagRepo.findById(id).map(tag -> new TagDTO(tag.getId(), tag.getName()));
+  }
+
+  public TagDTO create(CreateTagDTO createTagDTO) {
+    String name = createTagDTO.name().trim();
+
+    if (tagRepo.existsByName(name)) {
+      throw new IllegalArgumentException("Tag already exists with name: \"" + name + "\"");
+    }
+
+    TagEntity tagEntity = tagRepo.save(new TagEntity(name));
+    return new TagDTO(tagEntity.getId(), tagEntity.getName());
+  }
+
+  // It is designed to update tags with existence id, so no id check
+  public Optional<TagDTO> update(long id, UpdateTagDTO updateTagDTO) {
+    String newName = updateTagDTO.name();
+
+    if (tagRepo.existsByName(newName)) {
+      throw new IllegalArgumentException("Tag already exists with name: \"" + newName + "\"");
+    }
+
+    return tagRepo
+        .findById(id)
+        .map(
+            tagToUpdate -> {
+              tagToUpdate.setName(newName);
+              TagEntity updatedTag = tagRepo.save(tagToUpdate);
+              return new TagDTO(updatedTag.getId(), updatedTag.getName());
+            });
+  }
+}
