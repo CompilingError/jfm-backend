@@ -52,10 +52,10 @@ public class MovieEntity extends AuditedEntity {
 
   @ManyToMany
   @JoinTable(
-      name = "movie_actors",
+      name = "movie_artists",
       joinColumns = @JoinColumn(name = "movie_id"),
-      inverseJoinColumns = @JoinColumn(name = "actor_id"))
-  private Set<ActorEntity> actors = new HashSet<>();
+      inverseJoinColumns = @JoinColumn(name = "artist_id"))
+  private Set<ArtistEntity> artists = new HashSet<>();
 
   // Recommendation System
   private int freshVal;

@@ -10,12 +10,12 @@ import java.io.Serializable;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TagDTO implements Serializable {
-  private long id;
+public class ArtistDTO implements Serializable {
+  private Long id;
   private String name;
 
   @JsonCreator
-  public TagDTO(String name) {
-    this.name = name;
+  public ArtistDTO(String name) {
+    this.name=name;
   }
 }

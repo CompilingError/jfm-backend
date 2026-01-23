@@ -1,8 +1,6 @@
 package com.px.jfmbackend.service;
 
-import com.px.jfmbackend.dto.CreateTagDTO;
 import com.px.jfmbackend.dto.TagDTO;
-import com.px.jfmbackend.dto.UpdateTagDTO;
 import com.px.jfmbackend.entity.TagEntity;
 import com.px.jfmbackend.exception.IdNotFoundException;
 import com.px.jfmbackend.exception.TagAlreadyExistException;
@@ -40,7 +38,7 @@ class TagServiceTests {
         when(tagRepo.save(any(TagEntity.class))).thenReturn(saved);
 
         // act
-        TagDTO result = tagService.create(new CreateTagDTO(" test_tag_1 ")); // test trim
+        TagDTO result = tagService.create(new TagDTO(" test_tag_1 ")); // test trim
 
         // assert
         assertEquals(1L, result.getId());
@@ -61,7 +59,7 @@ class TagServiceTests {
 
         assertThrows(
                 TagAlreadyExistException.class,
-                () -> tagService.create(new CreateTagDTO("test_tag_1"))
+                () -> tagService.create(new TagDTO("test_tag_1"))
         );
 
         verify(tagRepo).existsByName("test_tag_1");
@@ -108,7 +106,7 @@ class TagServiceTests {
         saved.setName("thriller");
         when(tagRepo.save(any(TagEntity.class))).thenReturn(saved);
 
-        Optional<TagDTO> result = tagService.update(id, new UpdateTagDTO("thriller"));
+        Optional<TagDTO> result = tagService.update(id, new TagDTO("thriller"));
 
         assertTrue(result.isPresent());
         assertEquals("thriller", result.get().getName());
@@ -125,7 +123,7 @@ class TagServiceTests {
 
         assertThrows(
                 TagAlreadyExistException.class,
-                () -> tagService.update(10L, new UpdateTagDTO("test_tag_1"))
+                () -> tagService.update(10L, new TagDTO("test_tag_1"))
         );
 
         verify(tagRepo).existsByName("test_tag_1");
@@ -137,7 +135,7 @@ class TagServiceTests {
         when(tagRepo.existsByName("thriller")).thenReturn(false);
         when(tagRepo.findById(10L)).thenReturn(Optional.empty());
 
-        Optional<TagDTO> result = tagService.update(10L, new UpdateTagDTO("thriller"));
+        Optional<TagDTO> result = tagService.update(10L, new TagDTO("thriller"));
 
         assertTrue(result.isEmpty());
 

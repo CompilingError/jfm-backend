@@ -18,7 +18,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "tag")
+@Table(name = "tags")
 public class TagEntity {
 
   public TagEntity(String name) {

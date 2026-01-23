@@ -21,9 +21,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "actor", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
+@Table(name = "artists")
 @EntityListeners(AuditingEntityListener.class)
-public class ActorEntity {
+public class ArtistEntity {
+
+  public ArtistEntity(String name) { this.name=name; }
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
