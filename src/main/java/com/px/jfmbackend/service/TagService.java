@@ -37,6 +37,13 @@ public class TagService {
     return tagRepo.findById(id).map(tag -> new TagDTO(tag.getId(), tag.getName()));
   }
 
+  /**
+   * Creates a new tag.
+   *
+   * @param createTagDTO The DTO containing the name of the tag to be created.
+   * @return The created TagDTO.
+   * @throws IllegalArgumentException if a tag with the same name already exists.
+   */
   public TagDTO create(CreateTagDTO createTagDTO) {
     String name = createTagDTO.name().trim();
 
@@ -49,8 +56,24 @@ public class TagService {
   }
 
   // It is designed to update tags with existence id, so no id check
-  public Optional<TagDTO> update(long id, UpdateTagDTO updateTagDTO) {
+  /**
+   * Updates the name of an existing tag identified by its ID.
+   *
+   * @param id           The ID of the tag to be updated.
+   * @param updateTagDTO The DTO containing the new name for the tag.
+   * @return An Optional containing the updated TagDTO if the tag exists, or empty
+   *         if not.
+   * @throws IdNotFoundException      if the tag with the specified ID does not
+   *                                  exist.
+   * @throws TagAlreadyExistException if a tag with the new name already exists.
+   */
+  public Optional<TagDTO> update(long id, UpdateTagDTO updateTagDTO)
+      throws IdNotFoundException, TagAlreadyExistException {
     String newName = updateTagDTO.name();
+
+    if (!tagRepo.existsById(id)) {
+      throw new IdNotFoundException("Tag with id: " + id + " does not exist.");
+    }
 
     if (tagRepo.existsByName(newName)) {
       throw new TagAlreadyExistException("Tag already exists with name: \"" + newName + "\"");
