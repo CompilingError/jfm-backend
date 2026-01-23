@@ -63,10 +63,17 @@ public class TagService {
    * @param updateTagDTO The DTO containing the new name for the tag.
    * @return An Optional containing the updated TagDTO if the tag exists, or empty
    *         if not.
-   * @throws IllegalArgumentException if a tag with the new name already exists.
+   * @throws IdNotFoundException      if the tag with the specified ID does not
+   *                                  exist.
+   * @throws TagAlreadyExistException if a tag with the new name already exists.
    */
-  public Optional<TagDTO> update(long id, UpdateTagDTO updateTagDTO) {
+  public Optional<TagDTO> update(long id, UpdateTagDTO updateTagDTO)
+      throws IdNotFoundException, TagAlreadyExistException {
     String newName = updateTagDTO.name();
+
+    if (!tagRepo.existsById(id)) {
+      throw new IdNotFoundException("Tag with id: " + id + " does not exist.");
+    }
 
     if (tagRepo.existsByName(newName)) {
       throw new TagAlreadyExistException("Tag already exists with name: \"" + newName + "\"");
