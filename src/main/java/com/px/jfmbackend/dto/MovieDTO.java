@@ -9,11 +9,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MovieDTO extends AuditedDTO {
-  private String id;
+  private Long id;
   private String name;
   private String path;
   private String description;
   private List<TagDTO> tags;
   private List<ArtistDTO> artists;
+  private boolean like;
   private int freshVal;
 }

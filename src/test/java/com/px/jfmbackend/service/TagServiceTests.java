@@ -92,7 +92,6 @@ class TagServiceTests {
     void update_success() {
         long id = 10L;
 
-        // 新名字不冲突
         when(tagRepo.existsByName("thriller")).thenReturn(false);
 
         TagEntity existing = new TagEntity();
@@ -100,6 +99,7 @@ class TagServiceTests {
         existing.setName("test_tag_1");
 
         when(tagRepo.findById(id)).thenReturn(Optional.of(existing));
+        when(tagRepo.existsById(id)).thenReturn(true);
 
         TagEntity saved = new TagEntity();
         saved.setId(id);
@@ -120,10 +120,11 @@ class TagServiceTests {
     @Test
     void update_duplicateName_shouldThrow() {
         when(tagRepo.existsByName("test_tag_1")).thenReturn(true);
+        when(tagRepo.existsById(1L)).thenReturn(true);
 
         assertThrows(
                 TagAlreadyExistException.class,
-                () -> tagService.update(10L, new TagDTO("test_tag_1"))
+                () -> tagService.update(1L, new TagDTO("test_tag_1"))
         );
 
         verify(tagRepo).existsByName("test_tag_1");
@@ -131,16 +132,14 @@ class TagServiceTests {
     }
 
     @Test
-    void update_idNotFound_shouldReturnEmpty() {
-        when(tagRepo.existsByName("thriller")).thenReturn(false);
-        when(tagRepo.findById(10L)).thenReturn(Optional.empty());
+    void update_idNotFound_shouldThrow() {
+        when(tagRepo.existsById(10L)).thenReturn(false);
 
-        Optional<TagDTO> result = tagService.update(10L, new TagDTO("thriller"));
+        assertThrows(
+                IdNotFoundException.class,
+                () -> tagService.update(10L, new TagDTO("thriller"))
+        );
 
-        assertTrue(result.isEmpty());
-
-        verify(tagRepo).existsByName("thriller");
-        verify(tagRepo).findById(10L);
         verifyNoMoreInteractions(tagRepo);
     }
 
