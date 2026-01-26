@@ -12,6 +12,7 @@ import com.px.jfmbackend.repository.ArtistRepo;
 import com.px.jfmbackend.repository.MovieRepo;
 import com.px.jfmbackend.repository.TagRepo;
 import jakarta.transaction.Transactional;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -30,11 +31,18 @@ public class MovieService {
   private final TagRepo tagRepo;
   private final ArtistRepo artistRepo;
 
+  private final FreshValService freshValService;
+
   @Autowired
-  public MovieService(MovieRepo movieRepo, TagRepo tagRepo, ArtistRepo artistRepo) {
+  public MovieService(
+      MovieRepo movieRepo,
+      TagRepo tagRepo,
+      ArtistRepo artistRepo,
+      FreshValService freshValService) {
     this.movieRepo = movieRepo;
     this.tagRepo = tagRepo;
     this.artistRepo = artistRepo;
+    this.freshValService = freshValService;
   }
 
   public Page<MovieDTO> findAll(Pageable pageable) {
@@ -103,6 +111,7 @@ public class MovieService {
     // default
     movie.setLike(false);
     movie.setFreshVal(0);
+    movie.setFreshValUpdatedAt(Instant.now());
 
     // Link tags/artists
     if (req.tagIds() != null && !req.tagIds().isEmpty()) {
@@ -117,37 +126,53 @@ public class MovieService {
   }
 
   @Transactional
-  public Optional<MovieDTO> update(Long id, MovieUpdateDTO req) throws IdNotFoundException {
-    // id check
-    if (!movieRepo.existsById(id)) {
-      throw new IdNotFoundException("The movie with id " + id + " was not found.");
+  public MovieDTO update(Long id, MovieUpdateDTO req) throws IdNotFoundException {
+    MovieFileEntity movie =
+        movieRepo
+            .findById(id)
+            .orElseThrow(
+                () -> new IdNotFoundException("The movie with id " + id + " was not found."));
+
+    if (req.name() != null) movie.setName(req.name().trim());
+    if (req.path() != null) movie.setPath(req.path().trim());
+    if (req.description() != null) movie.setDescription(req.description());
+
+    if (req.freshVal() != null) movie.setFreshVal(req.freshVal());
+    if (req.like() != null) movie.setLike(req.like());
+
+    if (req.tagIds() != null) {
+      movie.setTags(new HashSet<>(tagRepo.findAllById(req.tagIds())));
+    }
+    if (req.artistIds() != null) {
+      movie.setArtists(new HashSet<>(artistRepo.findAllById(req.artistIds())));
     }
 
-    return movieRepo
-        .findById(id)
-        .map(
-            movie -> {
-              if (req.name() != null) movie.setName(req.name().trim());
-              if (req.path() != null) movie.setPath(req.path().trim());
-              if (req.description() != null) movie.setDescription(req.description());
-
-              if (req.freshVal() != null) movie.setFreshVal(req.freshVal());
-              if (req.like() != null) movie.setLike(req.like());
-
-              if (req.tagIds() != null) {
-                movie.setTags(new HashSet<>(tagRepo.findAllById(req.tagIds())));
-              }
-              if (req.artistIds() != null) {
-                movie.setArtists(new HashSet<>(artistRepo.findAllById(req.artistIds())));
-              }
-
-              return toDto(movieRepo.save(movie));
-            });
+    return toDto(movie);
   }
 
   @Transactional
   public void delete(List<Long> ids) {
     movieRepo.deleteAllById(ids);
+  }
+
+  @Transactional
+  public void updateAllFreshVals() {
+    List<MovieFileEntity> all = movieRepo.findAll();
+    for (MovieFileEntity movieFileEntity : all) {
+      freshValService.applyAgingIfNeeded(movieFileEntity);
+    }
+  }
+
+  @Transactional
+  public void updateFreshValWatched(Long id) throws IdNotFoundException {
+    MovieFileEntity movie =
+        movieRepo
+            .findById(id)
+            .orElseThrow(() -> new IdNotFoundException("Movie with id \"" + id + "\" not found"));
+
+    movie.setFreshVal(Math.max(0, movie.getFreshVal() - 30));
+    movie.setLastWatchedAt(Instant.now());
+    movie.setFreshValUpdatedAt(Instant.now());
   }
 
   private MovieDTO toDto(MovieFileEntity m) {

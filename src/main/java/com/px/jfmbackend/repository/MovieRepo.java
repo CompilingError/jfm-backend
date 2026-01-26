@@ -36,7 +36,7 @@ public interface MovieRepo extends JpaRepository<MovieFileEntity, Long> {
       """
       select distinct m from MovieFileEntity m
       join m.artists a
-      where a.id in :tagIds
+      where a.id in :artistIds
       """)
   Page<MovieFileEntity> findAllHavingAnyArtist(
       @Param("artistIds") List<Long> artistIds, Pageable pageable);
