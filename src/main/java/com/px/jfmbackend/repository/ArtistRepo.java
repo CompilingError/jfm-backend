@@ -5,9 +5,9 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ArtistRepo extends JpaRepository<ArtistEntity, Long> {
-    Optional<ArtistEntity> findByName(String name);
+  Optional<ArtistEntity> findByName(String name);
 
-    boolean existsByName(String name);
+  boolean existsByName(String name);
 
-    boolean existsById(Long id);
+  boolean existsById(Long id);
 }

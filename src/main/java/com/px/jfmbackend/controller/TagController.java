@@ -20,7 +20,7 @@ public class TagController {
 
   /**
    * Retrieves all tags.
-   * 
+   *
    * @return A list of TagDTO representing all tags.
    */
   @GetMapping
@@ -30,7 +30,7 @@ public class TagController {
 
   /**
    * Retrieves a tag by its name.
-   * 
+   *
    * @param name The name of the tag to retrieve.
    * @return A ResponseEntity containing the TagDTO if found, or a 404 Not Found
    *         status if not found.
@@ -45,7 +45,7 @@ public class TagController {
 
   /**
    * Retrieves a tag by its ID.
-   * 
+   *
    * @param id The ID of the tag to retrieve.
    * @return A ResponseEntity containing the TagDTO if found, or a 404 Not Found
    *         status if not found.
@@ -79,8 +79,7 @@ public class TagController {
    * @return A ResponseEntity containing the updated TagDTO if found, or a 404 Not
    */
   @PutMapping("/id/{id}")
-  public ResponseEntity<TagDTO> updateTag(
-      @PathVariable long id, @RequestBody TagDTO updateTagDTO) {
+  public ResponseEntity<TagDTO> updateTag(@PathVariable long id, @RequestBody TagDTO updateTagDTO) {
     return tagService
         .update(id, updateTagDTO)
         .map(ResponseEntity::ok)

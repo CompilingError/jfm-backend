@@ -18,6 +18,5 @@ public abstract class AuditedEntity {
   @Column(updatable = false)
   private Instant createdAt;
 
-  @LastModifiedDate
-  private Instant updatedAt;
+  @LastModifiedDate private Instant updatedAt;
 }

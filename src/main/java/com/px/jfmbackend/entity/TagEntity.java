@@ -17,5 +17,4 @@ public class TagEntity extends BasePropertyEntity {
   public TagEntity(String name) {
     super(name);
   }
-
 }

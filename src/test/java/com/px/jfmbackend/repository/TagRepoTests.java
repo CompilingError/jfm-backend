@@ -64,9 +64,7 @@ public class TagRepoTests {
     // insert the same name, should violate unique constraint
     TagEntity dup = new TagEntity("test1");
 
-    assertThrows(
-        Exception.class,
-        () -> tagRepo.saveAndFlush(dup));
+    assertThrows(Exception.class, () -> tagRepo.saveAndFlush(dup));
   }
 
   @Test

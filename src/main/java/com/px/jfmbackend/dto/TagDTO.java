@@ -1,11 +1,10 @@
 package com.px.jfmbackend.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
 
 @Getter
 @AllArgsConstructor

@@ -17,5 +17,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 public class ArtistEntity extends BasePropertyEntity {
 
-  public ArtistEntity(String name) { super(name); }
+  public ArtistEntity(String name) {
+    super(name);
+  }
 }
