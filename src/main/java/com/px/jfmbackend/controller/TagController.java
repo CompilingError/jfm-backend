@@ -1,8 +1,6 @@
 package com.px.jfmbackend.controller;
 
-import com.px.jfmbackend.dto.CreateTagDTO;
 import com.px.jfmbackend.dto.TagDTO;
-import com.px.jfmbackend.dto.UpdateTagDTO;
 import com.px.jfmbackend.service.TagService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +65,7 @@ public class TagController {
    * @return A ResponseEntity containing the created TagDTO.
    */
   @PostMapping
-  public ResponseEntity<TagDTO> createTag(@RequestBody CreateTagDTO createTagDTO) {
+  public ResponseEntity<TagDTO> createTag(@RequestBody TagDTO createTagDTO) {
     TagDTO createdTag = tagService.create(createTagDTO);
 
     return ResponseEntity.ok().body(createdTag);
@@ -82,7 +80,7 @@ public class TagController {
    */
   @PutMapping("/id/{id}")
   public ResponseEntity<TagDTO> updateTag(
-      @PathVariable long id, @RequestBody UpdateTagDTO updateTagDTO) {
+      @PathVariable long id, @RequestBody TagDTO updateTagDTO) {
     return tagService
         .update(id, updateTagDTO)
         .map(ResponseEntity::ok)

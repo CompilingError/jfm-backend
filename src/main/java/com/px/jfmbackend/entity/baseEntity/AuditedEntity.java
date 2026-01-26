@@ -1,4 +1,4 @@
-package com.px.jfmbackend.entity;
+package com.px.jfmbackend.entity.baseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
@@ -18,5 +18,6 @@ public abstract class AuditedEntity {
   @Column(updatable = false)
   private Instant createdAt;
 
-  @LastModifiedDate private Instant updatedAt;
+  @LastModifiedDate
+  private Instant updatedAt;
 }

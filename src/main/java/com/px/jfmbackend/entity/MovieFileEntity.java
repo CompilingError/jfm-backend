@@ -1,11 +1,8 @@
 package com.px.jfmbackend.entity;
 
-import jakarta.persistence.Column;
+import com.px.jfmbackend.entity.baseEntity.BaseFileEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -13,7 +10,6 @@ import jakarta.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,25 +19,15 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "contentHash", callSuper = false)
 @Entity
 @Table(name = "movies")
 @EntityListeners(AuditingEntityListener.class)
-public class MovieEntity extends AuditedEntity {
+public class MovieFileEntity extends BaseFileEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private boolean like;
 
-  private String name;
-
-  @Column(nullable = false)
-  private String path;
-
-  @Column(nullable = false, unique = true, length = 64)
-  private String contentHash; // sha-256 64 hex chars
-
-  private String description;
+  // Recommendation System
+  private int freshVal;
 
   @ManyToMany
   @JoinTable(
@@ -52,11 +38,8 @@ public class MovieEntity extends AuditedEntity {
 
   @ManyToMany
   @JoinTable(
-      name = "movie_actors",
+      name = "movie_artists",
       joinColumns = @JoinColumn(name = "movie_id"),
-      inverseJoinColumns = @JoinColumn(name = "actor_id"))
-  private Set<ActorEntity> actors = new HashSet<>();
-
-  // Recommendation System
-  private int freshVal;
+      inverseJoinColumns = @JoinColumn(name = "artist_id"))
+  private Set<ArtistEntity> artists = new HashSet<>();
 }

@@ -1,8 +1,6 @@
 package com.px.jfmbackend.service;
 
-import com.px.jfmbackend.dto.CreateTagDTO;
 import com.px.jfmbackend.dto.TagDTO;
-import com.px.jfmbackend.dto.UpdateTagDTO;
 import com.px.jfmbackend.entity.TagEntity;
 import com.px.jfmbackend.exception.IdNotFoundException;
 import com.px.jfmbackend.exception.TagAlreadyExistException;
@@ -44,8 +42,8 @@ public class TagService {
    * @return The created TagDTO.
    * @throws IllegalArgumentException if a tag with the same name already exists.
    */
-  public TagDTO create(CreateTagDTO createTagDTO) {
-    String name = createTagDTO.name().trim();
+  public TagDTO create(TagDTO createTagDTO) {
+    String name = createTagDTO.getName().trim();
 
     if (tagRepo.existsByName(name)) {
       throw new TagAlreadyExistException("Tag already exists with name: \"" + name + "\"");
@@ -55,7 +53,6 @@ public class TagService {
     return new TagDTO(tagEntity.getId(), tagEntity.getName());
   }
 
-  // It is designed to update tags with existence id, so no id check
   /**
    * Updates the name of an existing tag identified by its ID.
    *
@@ -67,9 +64,9 @@ public class TagService {
    *                                  exist.
    * @throws TagAlreadyExistException if a tag with the new name already exists.
    */
-  public Optional<TagDTO> update(long id, UpdateTagDTO updateTagDTO)
+  public Optional<TagDTO> update(long id, TagDTO updateTagDTO)
       throws IdNotFoundException, TagAlreadyExistException {
-    String newName = updateTagDTO.name();
+    String newName = updateTagDTO.getName();
 
     if (!tagRepo.existsById(id)) {
       throw new IdNotFoundException("Tag with id: " + id + " does not exist.");

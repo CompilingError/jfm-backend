@@ -66,9 +66,7 @@ public class TagRepoTests {
 
     assertThrows(
         Exception.class,
-        () -> {
-          tagRepo.saveAndFlush(dup);
-        });
+        () -> tagRepo.saveAndFlush(dup));
   }
 
   @Test
