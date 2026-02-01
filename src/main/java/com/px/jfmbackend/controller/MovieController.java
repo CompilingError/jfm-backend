@@ -29,13 +29,11 @@ public class MovieController {
     this.movieService = movieService;
   }
 
-  // 1) 全部 + 排序/分页
   @GetMapping
   public Page<MovieDTO> list(Pageable pageable) {
     return movieService.findAll(pageable);
   }
 
-  // 2) 按 id
   @GetMapping("/id/{id}")
   public ResponseEntity<MovieDTO> getById(@PathVariable Long id) {
     return movieService
@@ -44,13 +42,13 @@ public class MovieController {
         .orElseGet(() -> ResponseEntity.notFound().build());
   }
 
-  // 3) 按 name（允许同名 -> List）
+  // Same name allowed
   @GetMapping("/name/{name}")
   public List<MovieDTO> getByName(@PathVariable String name) {
     return movieService.findByName(name);
   }
 
-  // 4) 按 tagIds 过滤（ALL/ANY 可用 mode 参数）
+  // mode = ALL/ANY
   @GetMapping("/by-tags")
   public Page<MovieDTO> byTags(
       @RequestParam List<Long> tagIds,
@@ -59,7 +57,7 @@ public class MovieController {
     return movieService.findByTags(tagIds, mode, pageable);
   }
 
-  // 5) 按 artistIds 过滤（ALL/ANY 可用 mode 参数）
+  // mode = ALL/ANY
   @GetMapping("/by-artists")
   public Page<MovieDTO> byArtists(
       @RequestParam List<Long> artistIds,
@@ -68,25 +66,31 @@ public class MovieController {
     return movieService.findByArtists(artistIds, mode, pageable);
   }
 
-  // 6) 创建
   @PostMapping
   public ResponseEntity<MovieDTO> create(@RequestBody MovieCreateDTO req) {
     return ResponseEntity.ok().body(movieService.create(req));
   }
 
-  // 7) 更新
   @PutMapping("/id/{id}")
   public ResponseEntity<MovieDTO> update(@PathVariable Long id, @RequestBody MovieUpdateDTO req) {
-    return movieService
-        .update(id, req)
-        .map(ResponseEntity::ok)
-        .orElseGet(() -> ResponseEntity.notFound().build());
+    return ResponseEntity.ok().body(movieService.update(id, req));
   }
 
-  // 8) 删除
   @DeleteMapping
   public ResponseEntity<Void> delete(@RequestParam List<Long> ids) {
     movieService.delete(ids);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping("/update-freshval")
+  public ResponseEntity<Void> updateFreshVal() {
+    movieService.updateAllFreshVals();
+    return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping("/watched/{id}")
+  public ResponseEntity<Void> watchedFreshVal(@PathVariable Long id) {
+    movieService.updateFreshValWatched(id);
     return ResponseEntity.noContent().build();
   }
 }

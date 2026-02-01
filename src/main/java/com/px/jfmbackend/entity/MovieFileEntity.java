@@ -1,12 +1,8 @@
 package com.px.jfmbackend.entity;
 
 import com.px.jfmbackend.entity.baseEntity.BaseFileEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -28,6 +24,12 @@ public class MovieFileEntity extends BaseFileEntity {
 
   // Recommendation System
   private int freshVal;
+
+  @Column(name = "fresh_val_updated_at", nullable = false, columnDefinition = "TIMESTAMP")
+  private Instant freshValUpdatedAt;
+
+  @Column(name = "last_watched_at", columnDefinition = "TIMESTAMP")
+  private Instant lastWatchedAt;
 
   @ManyToMany
   @JoinTable(
