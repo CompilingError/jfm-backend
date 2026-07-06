@@ -259,7 +259,19 @@ public class MovieService {
 
   @Transactional
   public void delete(List<Long> ids) {
-    movieRepo.deleteAllById(ids);
+    if (ids == null || ids.isEmpty()) {
+      return;
+    }
+
+    List<MovieFileEntity> movies = movieRepo.findAllById(ids);
+
+    for (MovieFileEntity movie : movies) {
+      movie.getTags().clear();
+      movie.getArtists().clear();
+    }
+
+    movieRepo.deleteAll(movies);
+    movieRepo.flush();
   }
 
   @Transactional
