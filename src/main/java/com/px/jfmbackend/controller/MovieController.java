@@ -66,6 +66,21 @@ public class MovieController {
     return movieService.findByArtists(artistIds, mode, pageable);
   }
 
+  @GetMapping("/search")
+  public Page<MovieDTO> search(
+      @RequestParam(required = false) String name,
+      @RequestParam(required = false) List<Long> tagIds,
+      @RequestParam(defaultValue = "ALL") String tagMode,
+      @RequestParam(required = false) List<Long> artistIds,
+      @RequestParam(defaultValue = "ANY") String artistMode,
+      @RequestParam(required = false, name = "like") Boolean liked,
+      @RequestParam(required = false) Integer minFreshVal,
+      @RequestParam(required = false) Integer maxFreshVal,
+      Pageable pageable) {
+    return movieService.searchMovies(
+        name, tagIds, tagMode, artistIds, artistMode, liked, minFreshVal, maxFreshVal, pageable);
+  }
+
   @PostMapping
   public ResponseEntity<MovieDTO> create(@RequestBody MovieCreateDTO req) {
     return ResponseEntity.ok().body(movieService.create(req));

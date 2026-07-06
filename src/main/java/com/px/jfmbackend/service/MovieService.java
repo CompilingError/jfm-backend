@@ -13,9 +13,11 @@ import com.px.jfmbackend.repository.MovieRepo;
 import com.px.jfmbackend.repository.TagRepo;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -81,6 +83,111 @@ public class MovieService {
     return movieRepo
         .findAllHavingAllArtists(artistIds, artistIds.size(), pageable)
         .map(this::toDto);
+  }
+
+  public Page<MovieDTO> searchMovies(
+      String name,
+      List<Long> tagIds,
+      String tagMode,
+      List<Long> artistIds,
+      String artistMode,
+      Boolean liked,
+      Integer minFreshVal,
+      Integer maxFreshVal,
+      Pageable pageable) {
+    String normalizedName = normalizeSearchText(name);
+
+    List<Long> candidateIds = buildCandidateMovieIds(tagIds, tagMode, artistIds, artistMode);
+
+    Page<MovieFileEntity> moviePage;
+
+    if (candidateIds != null) {
+      if (candidateIds.isEmpty()) {
+        return Page.empty(pageable);
+      }
+
+      moviePage =
+          movieRepo.searchWithCandidateIds(
+              candidateIds, normalizedName, liked, minFreshVal, maxFreshVal, pageable);
+    } else {
+      moviePage =
+          movieRepo.searchWithoutCandidateIds(
+              normalizedName, liked, minFreshVal, maxFreshVal, pageable);
+    }
+
+    return moviePage.map(this::toDto);
+  }
+
+  private List<Long> buildCandidateMovieIds(
+      List<Long> tagIds, String tagMode, List<Long> artistIds, String artistMode) {
+    Set<Long> candidateIds = null;
+
+    if (hasIds(tagIds)) {
+      List<Long> tagMovieIds = findMovieIdsByTags(tagIds, tagMode);
+      candidateIds = new HashSet<>(tagMovieIds);
+    }
+
+    if (hasIds(artistIds)) {
+      List<Long> artistMovieIds = findMovieIdsByArtists(artistIds, artistMode);
+
+      if (candidateIds == null) {
+        candidateIds = new HashSet<>(artistMovieIds);
+      } else {
+        candidateIds.retainAll(artistMovieIds);
+      }
+    }
+
+    if (candidateIds == null) {
+      return null;
+    }
+
+    return new ArrayList<>(candidateIds);
+  }
+
+  private List<Long> findMovieIdsByTags(List<Long> tagIds, String tagMode) {
+    String normalizedMode = normalizeMode(tagMode, "ALL");
+
+    if ("ANY".equals(normalizedMode)) {
+      return movieRepo.findMovieIdsHavingAnyTag(tagIds);
+    }
+
+    return movieRepo.findMovieIdsHavingAllTags(tagIds, tagIds.size());
+  }
+
+  private List<Long> findMovieIdsByArtists(List<Long> artistIds, String artistMode) {
+    String normalizedMode = normalizeMode(artistMode, "ANY");
+
+    if ("ALL".equals(normalizedMode)) {
+      return movieRepo.findMovieIdsHavingAllArtists(artistIds, artistIds.size());
+    }
+
+    return movieRepo.findMovieIdsHavingAnyArtist(artistIds);
+  }
+
+  private boolean hasIds(List<Long> ids) {
+    return ids != null && !ids.isEmpty();
+  }
+
+  private String normalizeMode(String mode, String defaultMode) {
+    if (mode == null || mode.isBlank()) {
+      return defaultMode;
+    }
+
+    String upperMode = mode.trim().toUpperCase();
+
+    if ("ALL".equals(upperMode) || "ANY".equals(upperMode)) {
+      return upperMode;
+    }
+
+    return defaultMode;
+  }
+
+  private String normalizeSearchText(String value) {
+    if (value == null || value.isBlank()) {
+      return null;
+    }
+
+    return value.trim();
   }
 
   @Transactional
