@@ -1,3 +1,22 @@
 spring:
     application:
         name: jfm-backend
+
+    datasource:
+        driver-class-name: org.sqlite.JDBC
+        url: ${JFM_DB_URL:jdbc:sqlite:./data/jfm.db}
+        hikari:
+            maximum-pool-size: 1
+
+    jpa:
+        database-platform: org.hibernate.community.dialect.SQLiteDialect
+        hibernate:
+            ddl-auto: update
+        show-sql: false
+        properties:
+            hibernate:
+                format_sql: false
+
+server:
+    address: ${JFM_SERVER_ADDRESS:127.0.0.1}
+    port: ${JFM_SERVER_PORT:8080}
